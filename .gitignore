@@ -1,0 +1,19 @@
+# Data files
+*.csv
+
+
+# Jupyter Notebook
+.ipynb_checkpoints
+Untitled*.ipynb
+*Copy*.ipynb
+Purgatory/
+
+
+# Kendra
+notes.md
+
+# python
+__pycache__
+
+# specific project
+*.scala
