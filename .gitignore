@@ -1,5 +1,5 @@
 # Data files
-*.csv
+Data/
 
 
 # Jupyter Notebook
@@ -12,8 +12,11 @@ Purgatory/
 # Kendra
 notes.md
 
-# python
+# python 
 __pycache__
+
+# Mac OS
+.DS_Store
 
 # specific project
 *.scala
