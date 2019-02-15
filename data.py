@@ -30,6 +30,8 @@ user_df = pd.merge(churn_df, member_df, on='msno', how='left')
 # Drop features that aren't useful
 user_df.drop(columns=['gender', 'city', 'bd'], inplace=True)
 user_df['registration_init_time'] = pd.to_datetime(user_df['registration_init_time'], format='%Y%m%d')
+user_df['time_since_registration'] = round((dt.datetime(year=2017, month=4, day=30) - user_df['registration_init_time'])
+                                 / dt.timedelta(days=30), 2)
 
 # logs: summarize data
 logs_df['num_songs'] = (logs_df['num_100'] + logs_df['num_25'] +
@@ -40,14 +42,17 @@ logs_df['short_pct'] = logs_df['num_25'] / logs_df['num_songs']
 sec_in_day = 24*60*60
 logs_df = logs_df[logs_df['total_secs'] < sec_in_day]
 # Aggregate info in logs by user id
-log_grp_df = logs_df.groupby('msno').aggregate({'num_25':'mean', 'num_50':'mean','num_75':'mean',
-                                                'num_985':'mean','num_100':'mean','num_unq':'mean',
-                                                'num_songs':['mean','sum'],
-                                                'total_secs':['mean','sum','count']})
+log_grp_df = logs_df.groupby('msno').aggregate({'num_25':'mean', 'num_50':'mean', 'num_75':'mean',
+                                                'num_985':'mean', 'num_100':'mean',
+                                                'num_unq':'mean', 'num_songs':['mean','sum'],
+                                                'total_secs':['mean','sum','count'],
+                                                'full_pct':'mean', 'short_pct':'mean'})
 # fix multi-index column names
 log_grp_df.columns = [fix_col_names(col) for col in log_grp_df.columns]
 # merge with user_df
 user_df = pd.merge(user_df, log_grp_df, how='left', on='msno')
+user_df.rename(columns={'total_secs_count':'num_log_entries'}, inplace=True)
+
 
 # TRANSACTIONs:
 
