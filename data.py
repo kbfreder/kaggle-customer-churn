@@ -3,7 +3,6 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import datetime as dt
 import util as u
 import scipy.stats as stats
-from sklearn.model_selection import train_test_split
 
 
 # define functions
@@ -96,15 +95,13 @@ trans_grp2_df.columns = ['msno', 'payment_method_most_common_mode', 'payment_pla
 # merge with user_df & save
 user_df = pd.merge(user_df, trans_grp2_df, how='left', on='msno')
 u.pkl_this('Data/user_df_from_script.pkl', user_df)
+
+# prep for fitting
+user_df['registered_via'] = user_df['registered_via'].astype('category')
+
+# drop na's -- they are 'only' 75% of dataset -- & save
+df_drop = user_df.dropna()
+df_drop.reset_index(drop=True, inplace=True)
+u.pkl_this('Data/user_df_drop_na.pkl', df_drop)
+
 print('Done!')
-# create train-test split
-# target = 'is_churn'
-# y = user_df[target]
-# X = user_df.drop(columns=target)
-#
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=12)
-#
-# u.pkl_this('Data/X_train.pkl', X_train)
-# u.pkl_this('Data/X_test.pkl', X_test)
-# u.pkl_this('Data/y_train.pkl', y_train)
-# u.pkl_this('Data/y_test.pkl', y_test)
